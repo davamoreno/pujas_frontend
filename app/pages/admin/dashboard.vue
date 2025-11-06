@@ -75,7 +75,7 @@
             class="list-group-item list-group-item-warning"> <strong>Kode: {{ pesanan.kodePesanan }}</strong>
           <ul class="mt-2">
             <li v-for="item in pesanan.items" :key="item.id">
-              {{ item.jumlah }}x {{ item.menuItem.nama }}
+              {{ item.jumlah }}x {{ item.menu_item.nama }}
               <span v-if="item.catatan" class="text-muted fst-italic"> - "{{ item.catatan }}"</span>
             </li>
           </ul>

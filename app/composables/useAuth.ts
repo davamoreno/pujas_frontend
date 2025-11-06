@@ -58,7 +58,7 @@ export const useAuth = () => {
     token.value = null;
     user.value = null;
 
-    router.push('/login');
+    router.push('/admin/login');
   };
 
   return {
