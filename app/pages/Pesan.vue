@@ -1,183 +1,317 @@
 <template>
-  <div class="menu-page">
+  <div class="food-order-page container-fluid py-0">
     <!-- Header -->
-    <header class="header text-center py-3">
-      <h2 class="fw-bold mb-0">Wr. Bu Mang</h2>
-    </header>
-
-    <!-- Body Content -->
-    <div class="container py-4">
-      <!-- Nama Pemesan -->
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <div>
-          <small class="text-muted d-block">Nama Pemesan</small>
-          <h6 class="fw-semibold mb-0">{{ customerName }}</h6>
-        </div>
-        <button class="btn position-relative p-0 border-0 bg-transparent">
-          <i class="bi bi-bag fs-4"></i>
-          <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          >
-            {{ cartCount }}
-          </span>
-        </button>
+    <div class="w-100 bg-light shadow-sm mb-3">
+      <div class="container d-flex align-items-center justify-content-center py-3">
+        <h2 class="fw-bold mb-0">Wr. Bu Mang</h2>
       </div>
-
-      <!-- Search Bar -->
-      <div class="mb-4">
-        <div class="input-group">
-          <span class="input-group-text bg-white border-end-0">
-            <i class="bi bi-search"></i>
-          </span>
-          <input
-            type="text"
-            class="form-control border-start-0"
-            placeholder="Search..."
-            v-model="searchQuery"
-          />
-        </div>
-      </div>
-
-      <!-- Paling Sering Dibeli -->
-      <section class="mb-4">
-        <h5 class="fw-semibold mb-3">Paling Sering Dibeli</h5>
-        <div class="row g-3">
-          <div
-            class="col-6 col-md-4 col-lg-3"
-            v-for="item in favoriteItems"
-            :key="item.id"
-          >
-            <div class="card item-card text-center p-2 shadow-sm border-0 h-100">
-              <img :src="item.image" class="card-img-top rounded-3" alt="Menu" />
-              <div class="card-body p-2">
-                <h6 class="fw-semibold mb-1">{{ item.name }}</h6>
-                <p class="text-muted small mb-2">Rp{{ item.price.toLocaleString() }}</p>
-                <button
-                  class="btn btn-outline-success w-100"
-                  @click="addToCart(item)"
-                >
-                  Tambahkan
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Minuman -->
-      <section class="mb-5">
-        <h5 class="fw-semibold mb-3">Minuman</h5>
-        <div class="row g-3">
-          <div
-            class="col-6 col-md-4 col-lg-3"
-            v-for="item in drinkItems"
-            :key="item.id"
-          >
-            <div class="card item-card text-center p-2 shadow-sm border-0 h-100">
-              <img :src="item.image" class="card-img-top rounded-3" alt="Menu" />
-              <div class="card-body p-2">
-                <h6 class="fw-semibold mb-1">{{ item.name }}</h6>
-                <p class="text-muted small mb-2">Rp{{ item.price.toLocaleString() }}</p>
-                <button
-                  class="btn btn-outline-success w-100"
-                  @click="addToCart(item)"
-                >
-                  Tambahkan
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
 
-    <!-- Footer: Total dan Bayar -->
-    <footer
-      class="footer fixed-bottom bg-white shadow-lg border-top px-3 py-3 d-flex justify-content-between align-items-center"
-    >
-      <div class="d-flex align-items-center gap-2">
-        <button class="btn position-relative p-0 border-0 bg-transparent">
-          <i class="bi bi-bag-fill fs-5 text-success"></i>
-          <span
-            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-          >
-            {{ cartCount }}
-          </span>
-        </button>
-        <div>
-          <small class="text-muted d-block">Total</small>
-          <h6 class="fw-semibold mb-0 text-success">Rp{{ totalPrice.toLocaleString() }}</h6>
+    <!-- Nama Pemesan + Icon Keranjang -->
+    <div class="d-flex justify-content-between align-items-center mb-3 px-3">
+      <div>
+        <p class="mb-0 fw-semibold small text-secondary">Nama Pemesan</p>
+        <p class="mb-0 fw-bold">Mumuchang</p>
+      </div>
+      <button
+        class="btn position-relative rounded-circle shadow-sm p-2"
+        style="background-color: #ffffff; border: 1px solid rgba(0,0,0,0.06);"
+      >
+        <img src="/images/keranjang 2.jpg" alt="Keranjang" class="cart-icon" />
+        <span
+          class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle"
+          >{{ cart.length }}</span
+        >
+      </button>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="px-3 mb-4 position-relative search-wrapper">
+      <button
+        type="button"
+        @click="focusSearch"
+        aria-label="Focus search"
+        class="search-btn"
+      >
+        <img src="/images/search.jpg" alt="Search" class="search-img" />
+      </button>
+
+      <input
+        type="text"
+        class="form-control rounded-pill shadow-sm"
+        placeholder="Search..."
+        v-model="searchQuery"
+        style="padding-left:4.5rem;"
+      />
+    </div>
+
+    <!-- Menu: Paling Sering Dibeli -->
+    <div class="menu-section px-3 mb-4">
+      <h5 class="fw-semibold mb-3">Paling Sering Dibeli</h5>
+      <div class="row g-3">
+        <div
+          v-for="item in filteredPopularItems"
+          :key="item.id"
+          class="col-12 col-sm-6 col-md-4 col-lg-3"
+        >
+          <div class="card h-100 shadow-sm border-0">
+            <img :src="item.image" class="card-img-top" alt="menu image" />
+            <div class="card-body d-flex flex-column justify-content-between text-center">
+              <h6 class="card-title fw-semibold">{{ item.name }}</h6>
+              <p class="card-text text-secondary mb-2">{{ formatRupiah(item.price) }}</p>
+              <button class="btn btn-outline-success rounded-pill" @click="addToCart(item)">
+                Tambahkan
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <button class="btn btn-success px-4 py-2 fw-semibold">BAYAR</button>
-    </footer>
+    </div>
+
+    <!-- Menu: Minuman -->
+    <div class="menu-section px-3 mb-5">
+      <h5 class="fw-semibold mb-3">Minuman</h5>
+      <div class="row g-3">
+        <div
+          v-for="item in filteredDrinks"
+          :key="item.id"
+          class="col-12 col-sm-6 col-md-4 col-lg-3"
+        >
+          <div class="card h-100 shadow-sm border-0">
+            <img :src="item.image" class="card-img-top" alt="menu image" />
+            <div class="card-body d-flex flex-column justify-content-between text-center">
+              <h6 class="card-title fw-semibold">{{ item.name }}</h6>
+              <p class="card-text text-secondary mb-2">{{ formatRupiah(item.price) }}</p>
+              <button class="btn btn-outline-success rounded-pill" @click="addToCart(item)">
+                Tambahkan
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ CART SUMMARY -->
+    <div class="cart-summary-wrapper fixed-bottom d-flex justify-content-center px-3 pb-3">
+      <div
+        class="cart-summary d-flex justify-content-between align-items-center w-100"
+      >
+        <div class="d-flex align-items-center gap-3">
+          <div class="position-relative">
+            <div class="cart-icon-container d-flex align-items-center justify-content-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-bag text-success" viewBox="0 0 16 16">
+                <path d="M8 1a2.5 2.5 0 0 1 2.5 2.5V4h-5v-.5A2.5 2.5 0 0 1 8 1m3.5 3v-.5a3.5 3.5 0 1 0-7 0V4H1v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4zM2 5h12v9a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z"/>
+              </svg>
+            </div>
+            <span
+              class="badge bg-danger position-absolute top-0 start-100 translate-middle p-1 border border-light rounded-circle"
+              >{{ cart.length }}</span
+            >
+          </div>
+          <div class="text-start text-white">
+            <p class="mb-0 small">Total</p>
+            <h6 class="mb-0 fw-bold">{{ formatRupiah(total) }}</h6>
+          </div>
+        </div>
+        <button class="btn fw-bold rounded-pill text-white">BAYAR</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
 
-const customerName = ref('Mumuchang');
-const searchQuery = ref('');
-const cartCount = ref(0);
-const cart = ref([]);
+const searchQuery = ref('')
+const cart = ref([])
 
-const favoriteItems = ref([
-  { id: 1, name: 'Nasi Ayam Geprek', price: 15000, image: '/assets/images/ayam.jpg' },
-  { id: 2, name: 'Es Kopi', price: 10000, image: '/assets/images/kopi.jpg' },
-]);
+const menuItems = ref([
+  {
+    id: 1,
+    name: 'Nasi Ayam Geprek',
+    price: 15000,
+    category: 'popular',
+    image: '/images/nasi-ayam-geprek.jpg'
+  },
+  {
+    id: 2,
+    name: 'Es Kopi',
+    price: 10000,
+    category: 'popular',
+    image: '/images/es kopi.jpg'
+  },
+  {
+    id: 3,
+    name: 'Es Kopi',
+    price: 10000,
+    category: 'drink',
+    image: '/images/es kopi.jpg'
+  }
+])
 
-const drinkItems = ref([
-  { id: 3, name: 'Es Kopi', price: 10000, image: '/assets/images/kopi.jpg' },
-]);
+const filteredPopularItems = computed(() =>
+  menuItems.value.filter(
+    (item) =>
+      item.category === 'popular' &&
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+)
+
+const filteredDrinks = computed(() =>
+  menuItems.value.filter(
+    (item) =>
+      item.category === 'drink' &&
+      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+)
 
 const addToCart = (item) => {
-  cart.value.push(item);
-  cartCount.value = cart.value.length;
-};
+  cart.value.push({ ...item })
+}
 
-const totalPrice = computed(() =>
-  cart.value.reduce((sum, item) => sum + item.price, 0)
-);
+const total = computed(() => cart.value.reduce((sum, item) => sum + item.price, 0))
+
+const formatRupiah = (value) => {
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    minimumFractionDigits: 0
+  }).format(value)
+}
+
+const focusSearch = () => {
+  document.querySelector('.search-wrapper input')?.focus()
+}
 </script>
 
 <style scoped lang="scss">
-.menu-page {
-  background-color: #f8f9fa;
+.food-order-page {
+  background-color: #fff;
   min-height: 100vh;
-  padding-bottom: 100px; // ruang untuk footer tetap
+  padding-bottom: 80px;
 
-  .header {
-    background-color: #d9d9d9;
+  .card-img-top {
+    height: 150px;
+    object-fit: cover;
+    border-radius: 0.75rem 0.75rem 0 0;
   }
 
-  .item-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-
+  .card {
+    border-radius: 0.75rem;
+    transition: transform 0.2s ease;
     &:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: scale(1.02);
     }
+  }
 
-    img {
+  .btn-outline-success {
+    border: 1px solid #28a745;
+    color: #28a745;
+    &:hover {
+      background-color: #28a745;
+      color: white;
+    }
+  }
+
+  /* === SEARCH BAR === */
+  .search-wrapper {
+    position: relative;
+    .search-btn {
+      position: absolute;
+      left: 0.9rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      cursor: pointer;
+    }
+    .search-img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      display: block;
+    }
+    input.form-control {
+      padding-left: 4rem;
+      border-radius: 9999px;
+    }
+  }
+
+  /* ✅ CART SUMMARY */
+  .cart-summary-wrapper {
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .cart-summary {
+      background-color: #28a745;
+      color: white;
+      border-radius: 16px;
+      padding: 0.9rem 1.25rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       width: 100%;
-      height: 120px;
-      object-fit: cover;
+      max-width: 900px;
+      transition: all 0.3s ease;
+    }
+
+    .cart-icon-container {
+      width: 48px;
+      height: 48px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .bayar-btn {
+      padding: 0.6rem 2rem;
+      font-size: 1rem;
+      font-weight: 700;
     }
   }
 
-  .footer {
-    border-radius: 16px 16px 0 0;
-  }
-
+  /* 📱 RESPONSIVE */
   @media (max-width: 768px) {
-    .item-card img {
-      height: 100px;
-    }
-    .footer {
+    .cart-summary {
       flex-direction: column;
-      gap: 10px;
+      align-items: stretch !important;
       text-align: center;
+      gap: 0.75rem;
+
+      .bayar-btn {
+        width: 100%;
+        font-size: 0.95rem;
+      }
+    }
+
+    .cart-icon-container {
+      width: 42px;
+      height: 42px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .cart-summary {
+      border-radius: 12px;
+      padding: 0.8rem 1rem;
+      max-width: 100%;
+    }
+
+    .cart-icon-container {
+      width: 40px;
+      height: 40px;
+    }
+
+    .bayar-btn {
+      padding: 0.5rem 1rem;
     }
   }
 }
