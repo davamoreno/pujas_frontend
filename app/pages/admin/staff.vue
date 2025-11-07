@@ -27,10 +27,10 @@ const { data: staffList, pending, error } = await useFetch<any[]>(() => `${confi
   <div>
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h1 class="h3">Manajemen Staff</h1>
-      <button class="btn btn-primary">
+      <nuxt-link to="/admin/add/staff" class="btn btn-primary">
         <i class="bi bi-plus-circle"></i> 
         <span class="d-none d-md-inline ms-1">Tambah Staff Baru</span>
-      </button>
+      </nuxt-link>
     </div>
 
     <div v-if="pending" class="text-center p-5">

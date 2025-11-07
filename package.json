@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@oxc-parser/binding-darwin-x64": "^0.96.0",
     "@popperjs/core": "^2.11.8",
     "bootstrap": "^5.3.8",
     "laravel-echo": "^2.2.4",
