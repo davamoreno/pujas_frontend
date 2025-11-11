@@ -120,50 +120,21 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed } from 'vue';
 
-const searchQuery = ref('')
-const cart = ref([])
+const customerName = ref('Mumuchang');
+const searchQuery = ref('');
+const cartCount = ref(0);
+const cart = ref([]);
 
-const menuItems = ref([
-  {
-    id: 1,
-    name: 'Nasi Ayam Geprek',
-    price: 15000,
-    category: 'popular',
-    image: '/images/nasi-ayam-geprek.jpg'
-  },
-  {
-    id: 2,
-    name: 'Es Kopi',
-    price: 10000,
-    category: 'popular',
-    image: '/images/es kopi.jpg'
-  },
-  {
-    id: 3,
-    name: 'Es Kopi',
-    price: 10000,
-    category: 'drink',
-    image: '/images/es kopi.jpg'
-  }
-])
+const favoriteItems = ref([
+  { id: 1, name: 'Nasi Ayam Geprek', price: 15000, image: '/img/Ayam_geprek.jpg' },
+  { id: 2, name: 'Es Kopi', price: 10000, image: '/img/Caffe_Latte.jpg' },
+]);
 
-const filteredPopularItems = computed(() =>
-  menuItems.value.filter(
-    (item) =>
-      item.category === 'popular' &&
-      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-)
-
-const filteredDrinks = computed(() =>
-  menuItems.value.filter(
-    (item) =>
-      item.category === 'drink' &&
-      item.name.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-)
+const drinkItems = ref([
+  { id: 3, name: 'Es Kopi', price: 10000, image: '/img/Caffe_Latte.jpg' },
+]);
 
 const addToCart = (item) => {
   cart.value.push({ ...item })
@@ -184,29 +155,19 @@ const focusSearch = () => {
 }
 </script>
 
-<style scoped lang="scss">
-.food-order-page {
-  background-color: #fff;
+<style scoped>
+.menu-page {
+  background-color: #f8f9fa;
   min-height: 100vh;
-  padding-bottom: 80px;
-
-  .card-img-top {
-    height: 150px;
-    object-fit: cover;
-    border-radius: 0.75rem 0.75rem 0 0;
+  padding-bottom: 100px;
+}
+  .header {
+    background-color: #d9d9d9;
   }
 
-  .card {
-    border-radius: 0.75rem;
-    transition: transform 0.2s ease;
-    &:hover {
-      transform: scale(1.02);
-    }
-  }
+.item-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 
-  .btn-outline-success {
-    border: 1px solid #28a745;
-    color: #28a745;
     &:hover {
       background-color: #28a745;
       color: white;
@@ -284,35 +245,6 @@ const focusSearch = () => {
       flex-direction: column;
       align-items: stretch !important;
       text-align: center;
-      gap: 0.75rem;
-
-      .bayar-btn {
-        width: 100%;
-        font-size: 0.95rem;
-      }
-    }
-
-    .cart-icon-container {
-      width: 42px;
-      height: 42px;
     }
   }
-
-  @media (max-width: 480px) {
-    .cart-summary {
-      border-radius: 12px;
-      padding: 0.8rem 1rem;
-      max-width: 100%;
-    }
-
-    .cart-icon-container {
-      width: 40px;
-      height: 40px;
-    }
-
-    .bayar-btn {
-      padding: 0.5rem 1rem;
-    }
-  }
-}
 </style>

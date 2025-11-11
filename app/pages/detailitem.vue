@@ -8,7 +8,7 @@
         </button>
         <h4 class="fw-semibold mb-0 flex-grow-1 text-center">Detail</h4>
         <div style="width: 44px;"></div> <!-- Spacer agar teks tetap center -->
-      </div>e
+      </div>
 
       <!-- Card Makanan -->
       <div class="card shadow-sm border-0 rounded-4 overflow-hidden mx-auto card-detail">
