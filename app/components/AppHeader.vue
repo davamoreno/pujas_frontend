@@ -1,13 +1,11 @@
 <script setup lang="ts">
-  // Ambil data user dari state global
-  const user = useAuthUser();
-  const { logout } = useAuth();
-
-  console.log("User di AppHeader:", user);
+import { useAuthStore } from '~/stores/auth';
+  
+  // Ambil instance store-nya
+  const authStore = useAuthStore();
 
   const handleLogout = () => {
-    // Panggil fungsi logout dari composable
-    logout(); 
+    authStore.logout(); // Panggil action logout dari Pinia
   }
 </script>
 

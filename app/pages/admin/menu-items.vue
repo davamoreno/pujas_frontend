@@ -6,14 +6,14 @@ definePageMeta({
 });
 
 // 2. Ambil state user (untuk cek role) dan token (untuk API call)
-const user = useAuthUser();
-const authToken = useAuthToken();
+const user = useAuthStore().user;
+const authToken = useAuthStore().token;
 const config = useRuntimeConfig();
 
 // 3. Panggil API
 const { data: menuItems, pending, error } = await useFetch<any[]>(() => `${config.public.apiHost}/api/menu-items`, {
   headers: {
-    'Authorization': `Bearer ${authToken.value}`,
+    'Authorization': `Bearer ${authToken}`,
     'Accept': 'application/json'
   },
   lazy: true

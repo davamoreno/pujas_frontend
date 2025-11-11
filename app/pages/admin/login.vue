@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { useAuthStore } from '~/stores/auth';
+
+const authStore = useAuthStore();
 const router = useRouter();
-const authToken = useAuthToken();
-const authUser = useAuthUser();
 // 1. Variabel untuk menyimpan input form
 const username = ref('');
 const password = ref('');
@@ -12,7 +13,7 @@ const errorMessage = ref<string | null>(null);
 
 // 3. Ambil runtime config untuk alamat API (jika perlu)
 // Untuk sekarang, kita akan hardcode URL API backend
-const API_BASE_URL = 'http://localhost:8000/api'; // <-- Sesuaikan jika port-mu beda
+const config = useRuntimeConfig();
 
 // 4. Fungsi yang dijalankan saat form disubmit
 async function handleLogin() {
@@ -21,7 +22,7 @@ async function handleLogin() {
 
   try {
     // 5. Gunakan useFetch bawaan Nuxt untuk memanggil API
-    const { data, error } : {data : any, error : any} = await useFetch( `${API_BASE_URL}/auth/login`, {
+    const { data, error } : {data : any, error : any} = await useFetch( `${config.public.apiHost}/api/auth/login`, {
       method: 'POST',
       body: {
         username: username.value,
@@ -35,10 +36,8 @@ async function handleLogin() {
       throw new Error(error.value.data.error || 'Username atau password salah.');
     }
 
-    // 7. JIKA BERHASIL:
-    authToken.value = data.value.access_token;
-    authUser.value = data.value.user;
-    router.push('/admin/dashboard');
+      // 7. JIKA BERHASIL:
+    await authStore.login(data.value);
     
     // --- LANGKAH SELANJUTNYA ---
     // Kita akan simpan 'data.value.access_token'

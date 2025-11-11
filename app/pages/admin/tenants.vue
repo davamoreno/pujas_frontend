@@ -6,7 +6,7 @@ definePageMeta({
 });
 
 // 2. Siapkan state
-const authToken = useAuthToken();
+const authToken = useAuthStore().token;
 const config = useRuntimeConfig();
 
 // 3. Panggil API (useFetch)
@@ -18,9 +18,9 @@ lazy: true,
   // Gunakan 'onRequest' untuk menyisipkan token secara dinamis
   onRequest({ request, options }) {
     // Pastikan kita punya token sebelum melampirkannya
-    if (authToken.value) {
+    if (authToken) {
       options.headers = new Headers(options.headers); // Buat header baru
-      options.headers.set('Authorization', `Bearer ${authToken.value}`);
+      options.headers.set('Authorization', `Bearer ${authToken}`);
       options.headers.set('Accept', 'application/json');
     }
   }

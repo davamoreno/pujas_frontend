@@ -6,7 +6,7 @@ definePageMeta({
 });
 
 // 2. Siapkan state
-const authToken = useAuthToken();
+const authToken = useAuthStore().token;
 const config = useRuntimeConfig();
 
 // 3. Panggil API
@@ -14,9 +14,9 @@ const { data: staffList, pending, error } = await useFetch<any[]>(() => `${confi
   lazy: true,
   // 4. Gunakan 'onRequest' untuk melampirkan token
   onRequest({ request, options }) {
-    if (authToken.value) {
+    if (authToken) {
       options.headers = new Headers(options.headers);
-      options.headers.set('Authorization', `Bearer ${authToken.value}`);
+      options.headers.set('Authorization', `Bearer ${authToken}`);
       options.headers.set('Accept', 'application/json');
     }
   }

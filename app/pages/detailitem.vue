@@ -1,5 +1,25 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const menu = {
+  name: 'Nasi Ayam Geprek',
+  price: 15000,
+  image: '/images/nasi-ayam-geprek.jpg'
+}
+
+const quantity = ref(1)
+const note = ref('')
+
+function changeQty(amount : number) {
+  quantity.value = Math.max(1, quantity.value + amount)
+}
+
+function tambahPesanan() {
+  alert(`Pesanan ditambahkan!\n${menu.name} x${quantity.value}\nCatatan: ${note.value || '-'}`)
+}
+</script>
+
 <template>
-    <template>
   <div class="bg-light min-vh-100">
     <div class="container py-4 detail-wrapper">
 
@@ -55,27 +75,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-
-const menu = {
-  name: 'Nasi Ayam Geprek',
-  price: 15000,
-  image: '/images/nasi-ayam-geprek.jpg'
-}
-
-const quantity = ref(1)
-const note = ref('')
-
-function changeQty(amount) {
-  quantity.value = Math.max(1, quantity.value + amount)
-}
-
-function tambahPesanan() {
-  alert(`Pesanan ditambahkan!\n${menu.name} x${quantity.value}\nCatatan: ${note.value || '-'}`)
-}
-</script>
 
 <style scoped>
 /* Wrapper */
@@ -209,4 +208,3 @@ function tambahPesanan() {
   }
 }
 </style>
-</template>
