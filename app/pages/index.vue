@@ -1,4 +1,3 @@
-    <!-- pages/index.vue -->
 <template>
 
   <div class="d-flex justify-content-center align-items-center"

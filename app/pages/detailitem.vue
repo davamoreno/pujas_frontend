@@ -10,7 +10,7 @@ const menu = {
 const quantity = ref(1)
 const note = ref('')
 
-function changeQty(amount : number) {
+function changeQty(amount: number) {
   quantity.value = Math.max(1, quantity.value + amount)
 }
 
@@ -25,10 +25,7 @@ function tambahPesanan() {
 
       <!-- Header: Tombol kembali + judul -->
       <div class="d-flex align-items-center justify-content-center position-relative mb-3 header-detail">
-        <button
-          @click="$router.back()"
-          class="btn btn-link p-0 position-absolute start-0 back-btn"
-        >
+        <button @click="$router.back()" class="btn btn-link p-0 position-absolute start-0 back-btn">
           <img src="/images/kembali.svg" alt="Kembali" class="icon-kembali" />
         </button>
         <h4 class="text-center fw-semibold mb-0">Detail</h4>
@@ -58,12 +55,8 @@ function tambahPesanan() {
           <!-- Catatan -->
           <div class="mb-3">
             <label class="form-label fw-semibold">Catatan</label>
-            <textarea
-              v-model="note"
-              class="form-control"
-              placeholder="Berikan catatan jika diperlukan..."
-              rows="2"
-            ></textarea>
+            <textarea v-model="note" class="form-control" placeholder="Berikan catatan jika diperlukan..."
+              rows="2"></textarea>
           </div>
 
           <!-- Tombol Tambah Pesanan -->
@@ -87,6 +80,7 @@ function tambahPesanan() {
 .header-detail {
   position: relative;
 }
+
 .back-btn {
   width: 42px;
   height: 42px;
@@ -98,14 +92,17 @@ function tambahPesanan() {
   justify-content: center;
   transition: all 0.2s ease;
 }
+
 .back-btn:hover {
   background-color: #f8f9fa;
 }
+
 .icon-kembali {
   width: 22px;
   height: 22px;
   transition: transform 0.2s ease;
 }
+
 .back-btn:hover .icon-kembali {
   transform: scale(1.1);
 }
@@ -116,6 +113,7 @@ function tambahPesanan() {
   max-width: 100%;
   border-radius: 16px;
 }
+
 .card-img-top {
   height: 240px;
   object-fit: cover;
@@ -134,6 +132,7 @@ function tambahPesanan() {
   width: fit-content;
   flex-shrink: 0;
 }
+
 .qty-control button {
   border: none;
   background: none;
@@ -144,6 +143,7 @@ function tambahPesanan() {
   align-items: center;
   justify-content: center;
 }
+
 .qty-control input {
   width: 40px;
   text-align: center;
@@ -159,24 +159,31 @@ function tambahPesanan() {
   .detail-wrapper {
     padding: 0 1rem;
   }
+
   .card-img-top {
     height: 190px;
   }
+
   .card-body {
     padding: 1rem;
   }
+
   h4 {
     font-size: 1rem;
   }
+
   h5.card-title {
     font-size: 1rem;
   }
+
   textarea.form-control {
     font-size: 0.9rem;
   }
+
   .qty-control {
     margin-top: 0.6rem;
   }
+
   .btn-success {
     font-size: 0.9rem;
   }
@@ -187,9 +194,11 @@ function tambahPesanan() {
   .detail-wrapper {
     max-width: 550px;
   }
+
   .card-img-top {
     height: 260px;
   }
+
   .card-body {
     padding: 1.25rem 1.75rem;
   }
@@ -200,9 +209,11 @@ function tambahPesanan() {
   .detail-wrapper {
     max-width: 640px;
   }
+
   .card-img-top {
     height: 320px;
   }
+
   .card-body {
     padding: 1.5rem 2rem;
   }
