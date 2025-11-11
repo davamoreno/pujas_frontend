@@ -1,15 +1,16 @@
-export default defineNuxtRouteMiddleware((to, from) => { 
-    if (process.server) {
-        return;
-    }
-    const authToken = useAuthToken();
-    const authUser = useAuthUser();
+// middleware/admin.ts
+import { useAuthStore } from '~/stores/auth';
 
-    if (!authToken.value) {
-        return navigateTo('/forbidden');
-    }
+export default defineNuxtRouteMiddleware((to, from) => {
+  const authStore = useAuthStore();
 
-    if (authUser.value?.role !== 'Admin') {
-        return navigateTo('/admin/dashboard');
-    }
-})
+  if (!authStore.isLoggedIn) {
+    return navigateTo('/admin/login');
+  }
+
+  // Gunakan getter 'isAdmin' kita
+  if (!authStore.isAdmin) { 
+    // Jika bukan Admin, tendang ke dasbor
+    return navigateTo('/admin/dashboard');
+  }
+});

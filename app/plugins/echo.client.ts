@@ -5,7 +5,7 @@ import Pusher from 'pusher-js';
 
 export default defineNuxtPlugin(() => {
   // 1. Ambil state token kita (yang dari useCookie)
-  const authToken = useAuthToken();
+  const auth = useAuthStore();
 
   // 2. Dapatkan konfigurasi dari runtimeConfig
   const config = useRuntimeConfig();
@@ -30,7 +30,7 @@ export default defineNuxtPlugin(() => {
     auth: {
       headers: {
         // Kirim token JWT kita di header
-        'Authorization': `Bearer ${authToken.value}`,
+        'Authorization': `Bearer ${auth.token}`,
         'Accept': 'application/json',
       },
     },

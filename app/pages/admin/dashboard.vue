@@ -5,6 +5,7 @@
     middleware: 'auth'
   });
 
+  import { useAuthStore } from '#imports';
   const pesananMasuk = ref<any[]>([]);
   const channelName = ref<string | null>(null);
 
@@ -14,16 +15,18 @@
   const { $echo } = useNuxtApp();
 
   // 2. Ambil data user (kita butuh ID tenant-nya)
-  const user = useAuthUser();
+  
+  const authStore = useAuthStore();
+  const user = computed(() => authStore.user);
 
   // 3. Gunakan onMounted agar kode ini berjalan HANYA di browser
   //    setelah halaman siap
   onMounted(() => {
     // Pastikan user adalah 'Pemilik Tenant' dan punya tenant
-    console.log("User saat ini:", user.value?.tenant);
+    console.log("User saat ini:", user.value);
     if (user.value?.role === 'Pemilik Tenant') {
-      if (user.value.tenant) {
-        const tenantId = user.value.tenant.id;
+      if (user.value?.tenant) {
+        const tenantId = user.value.tenant?.id;
         console.log("ID Tenant:", tenantId); // SEKARANG INI AKAN ADA ISINYA
         channelName.value = `tenant.${tenantId}`;
         console.log(`Mencoba mendengarkan di channel: ${channelName.value}`);

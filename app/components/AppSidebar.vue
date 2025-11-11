@@ -1,5 +1,6 @@
 <script setup lang="ts">
-  const user = useAuthUser();
+  const authStore = useAuthStore();
+  const user = computed(() => authStore.user);
 </script>
 
 <template>

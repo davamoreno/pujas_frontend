@@ -5,8 +5,9 @@ export default defineNuxtConfig({
   nitro: {
     preset: 'node-server',
   },
+  modules: ['@pinia/nuxt', '@vueuse/nuxt', 'pinia-plugin-persistedstate/nuxt'],
   css: ['bootstrap/dist/css/bootstrap.min.css'],
-  plugins: ['app/plugins/bootstrap.client.ts', 'app/plugins/echo.client.ts'],
+  plugins: ['app/plugins/bootstrap.client.ts', 'app/plugins/echo.client.ts', 'app/plugins/pinia-persist.client.ts'],
   routeRules: {
     '/api/**': { proxy: {to : 'http://127.0.0.1:8000/api/**'} },
   },

@@ -17,7 +17,7 @@
       <div class="col-6 d-flex justify-content-end align-items-center">
         <button style="width: 60px; height: 60px; border-color: #D9D9D9;"
           class="d-flex justify-content-center align-items-center btn rounded-pill btn-zoom disabled">
-          <img src="D:\laravel\pujas_frontend\public\img\keranjang.svg" alt="">
+          <img src="\img\keranjang.svg" alt="">
         </button>
       </div>
     </div>
@@ -29,7 +29,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Surya</h5>
             </div>
@@ -38,7 +38,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Yonathan</h5>
             </div>
@@ -47,7 +47,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Abhi</h5>
             </div>
@@ -56,7 +56,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Dava</h5>
             </div>
@@ -66,7 +66,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Ozza</h5>
             </div>
@@ -75,7 +75,7 @@
 
         <div class="col-lg-4 col-md-6">
           <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="D:\laravel\pujas_frontend\public\img\tenant.jpg" class="card-img-top p-3" alt="...">
+            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
             <div class="card-body">
               <h5 class="card-title text-center">Warung Bu Jesi</h5>
             </div>

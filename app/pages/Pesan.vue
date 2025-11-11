@@ -123,12 +123,12 @@ const cartCount = ref(0);
 const cart = ref([]);
 
 const favoriteItems = ref([
-  { id: 1, name: 'Nasi Ayam Geprek', price: 15000, image: '/assets/images/ayam.jpg' },
-  { id: 2, name: 'Es Kopi', price: 10000, image: '/assets/images/kopi.jpg' },
+  { id: 1, name: 'Nasi Ayam Geprek', price: 15000, image: '/img/Ayam_geprek.jpg' },
+  { id: 2, name: 'Es Kopi', price: 10000, image: '/img/Caffe_Latte.jpg' },
 ]);
 
 const drinkItems = ref([
-  { id: 3, name: 'Es Kopi', price: 10000, image: '/assets/images/kopi.jpg' },
+  { id: 3, name: 'Es Kopi', price: 10000, image: '/img/Caffe_Latte.jpg' },
 ]);
 
 const addToCart = (item) => {
@@ -141,17 +141,17 @@ const totalPrice = computed(() =>
 );
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .menu-page {
   background-color: #f8f9fa;
   min-height: 100vh;
-  padding-bottom: 100px; // ruang untuk footer tetap
-
+  padding-bottom: 100px;
+}
   .header {
     background-color: #d9d9d9;
   }
 
-  .item-card {
+.item-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 
     &:hover {
@@ -180,5 +180,4 @@ const totalPrice = computed(() =>
       text-align: center;
     }
   }
-}
 </style>
