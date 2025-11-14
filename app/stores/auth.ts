@@ -1,6 +1,4 @@
-// stores/auth.ts
 import { defineStore } from 'pinia';
-import { createPersistedState } from 'pinia-plugin-persistedstate';
 
 // ... (Interface User tetap sama)
 interface User {
@@ -16,7 +14,6 @@ interface User {
 interface AuthState {
   token: string | null;
   user: User | null;
-  maxAge: number;
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -24,8 +21,8 @@ export const useAuthStore = defineStore('auth', {
     {
     token: null,
     user: null,
-    maxAge: 0,
   }),
+
   getters: {
     isLoggedIn: (state) => !!state.token,
     isAdmin: (state) => state.user?.role === 'Admin',
@@ -35,34 +32,37 @@ export const useAuthStore = defineStore('auth', {
   // 2. 'actions' SUDAH ADA. Error TS-mu ('Property 'login' does not exist')
   //    akan HILANG setelah kita memperbaiki error 'persist' di bawah.
   actions: {
+    
     async login(loginData: { access_token: string; user: User }) {
       this.token = loginData.access_token;
       this.user = loginData.user;
-      this.maxAge = 60 * 60 * 24; // 1 hari
       
       const router = useRouter();
       await router.push('/admin/dashboard');
     },
 
     logout() {
-        const API_BASE_URL = 'http://localhost:8000';
+        const config = useRuntimeConfig();
 
-        useFetch(`${API_BASE_URL}/api/auth/logout`, { method: 'POST', headers: {
+        $fetch(`${config.public.apiHost}/api/auth/logout`, { method: 'POST', headers: {
           'Authorization': `Bearer ${this.token}`,
           'Accept': 'application/json',
         }});
 
         this.token = null;
         this.user = null;
-        this.maxAge = 0; // reset maxAge
-        
+
         const router = useRouter();
         router.push('/admin/login');
     },
   },
 
+  /** 
+   * Baca dokumentasi untuk pinia-plugin-persistedstate:
+   https://github.com/prazdevs/pinia-plugin-persistedstate/blob/main/docs/frameworks/nuxt.md
+   3. Tambahkan konfigurasi 'persist' di sini 
+  */
   persist: {
-    storage: createPersistedState().cookieStorage,
-    pick : ['token', 'user']
+    pick: ['token', 'user'],
   },
 });
