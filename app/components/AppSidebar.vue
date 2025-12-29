@@ -6,12 +6,16 @@
     </div>
     
     <nav class="nav-list">
-      <ul class="list-unstyled">
+      <ul class="list-unstyled" v-if="authStore.user?.role === 'Admin'">
         <li><NuxtLink to="/admin/dashboard" class="nav-link"><i class="bi bi-grid-fill"></i> <span class="link-text">Dashboard</span></NuxtLink></li>
         <li><NuxtLink to="/admin/tenants" class="nav-link"><i class="bi bi-shop"></i> <span class="link-text">Kelola Tenant</span></NuxtLink></li>
-        <li><NuxtLink to="/admin/staff" class="nav-link"><i class="bi bi-people-fill"></i> <span class="link-text">Kelola Pedagang</span></NuxtLink></li>
+        <li><NuxtLink to="/admin/staffs" class="nav-link"><i class="bi bi-people-fill"></i> <span class="link-text">Kelola Pedagang</span></NuxtLink></li>
         <li><NuxtLink to="/admin/laporan" class="nav-link"><i class="bi bi-bar-chart-fill"></i> <span class="link-text">Rekap Laporan</span></NuxtLink></li>
-        
+        <li><NuxtLink to="/admin/manajemen-pesanan" class="nav-link"><i class="bi bi-clock-history"></i> <span class="link-text">Manajemen Pesanan</span></NuxtLink></li>
+      </ul>
+      <ul class="list-unstyled" v-else-if="authStore.user?.role === 'Pemilik Tenant'">
+        <li><NuxtLink to="/admin/dashboard" class="nav-link"><i class="bi bi-grid-fill"></i> <span class="link-text">Dashboard</span></NuxtLink></li>
+        <li><NuxtLink to="/admin/menu-items" class="nav-link"><i class="bi bi-card-list"></i> <span class="link-text">Kelola Menu</span></NuxtLink></li>
         <li><NuxtLink to="/admin/manajemen-pesanan" class="nav-link"><i class="bi bi-clock-history"></i> <span class="link-text">Manajemen Pesanan</span></NuxtLink></li>
       </ul>
     </nav>

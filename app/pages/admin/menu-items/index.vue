@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth';
 import { useRoute } from 'vue-router';
+import type { MenuItem } from '~/types/api/menuitem';
+import type { PaginatedResponse } from '~/types/api/pagination';
 
 // 1. Terapkan Layout dan Middleware
 definePageMeta({
@@ -13,31 +15,8 @@ const authStore = useAuthStore();
 const route = useRoute();
 const config = useRuntimeConfig();
 
-// Interface untuk Menu Item
-interface MenuItem {
-  id: number;
-  nama: string;
-  kategori: {
-    nama: string;
-  } | null;
-  harga: number;
-  qty: number;
-  is_tersedia: boolean;
-  gambar_url: string | null;
-  tenant: {
-    nama: string;
-  } | null;
-}
-
-// Interface untuk response paginasi
-interface paginatedResponse<MenuItem> {
-  data: MenuItem[];
-  meta: object;
-  links: object;
-}
-
 // 3. Panggil API
-const { data: paginatedData, pending, error, refresh } = await useFetch<paginatedResponse<MenuItem>>(() => {
+const { data: paginatedData, pending, error, refresh } = await useFetch<PaginatedResponse<MenuItem>>(() => {
     // Ini akan otomatis dijalankan ulang jika query berubah
     let url = `${config.public.apiHost}/api/menu-items`;
     
@@ -61,6 +40,12 @@ const { data: paginatedData, pending, error, refresh } = await useFetch<paginate
         options.headers.set('Accept', 'application/json');
       }
     },
+    onResponseError({ request, response, options }) {
+      if (response.status === 401) {
+        // Token mungkin sudah tidak valid, redirect ke halaman login
+        authStore.logout();
+      }
+    }
   });
 
 // 4. Siapkan computed untuk daftar menu items
@@ -95,6 +80,7 @@ async function handleDelete(id: number, nama: string) {
     alert(`Gagal menghapus item: ${err.data?.message || 'Error server'}`);
   }
 }
+
 </script>
 
 <template>
@@ -103,7 +89,7 @@ async function handleDelete(id: number, nama: string) {
       <h1 class="h3">Manajemen Menu Items</h1>
       <NuxtLink 
         v-if="user?.role === 'Admin' || user?.role === 'Pemilik Tenant'" 
-        to="/menu-items/create" 
+        to="/admin/menu-items/create" 
         class="btn btn-primary"
       >
         <i class="bi bi-plus-circle"></i> 
@@ -111,9 +97,15 @@ async function handleDelete(id: number, nama: string) {
       </NuxtLink>
     </div>
 
-    <div v-if="pending" class="text-center p-5">...</div>
+     <div v-if="pending" class="text-center p-5">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
 
-    <div v-else-if="error" class="alert alert-danger">...</div>
+    <div v-else-if="error" class="alert alert-danger">
+      Gagal memuat data menu items: {{ error.message }}
+    </div>
 
     <div v-else-if="menuItems && menuItems.length > 0">
       
@@ -150,12 +142,12 @@ async function handleDelete(id: number, nama: string) {
                   </span>
                 </td>
                 <td v-if="user?.role === 'Admin'">
-                  {{ item.tenant?.nama || 'N/A' }}
+                  {{ item.tenant || 'N/A' }}
                 </td>
 
                 <td>
                   <NuxtLink 
-                    :to="`/menu-items/${item.id}/edit`" 
+                    :to="`/admin/menu-items/${item.id}/edit`" 
                     class="btn btn-sm btn-outline-secondary me-2"
                   >
                     <i class="bi bi-pencil-fill"></i> Edit
@@ -178,7 +170,7 @@ async function handleDelete(id: number, nama: string) {
           
           <div class="row g-0">
             <div class="col-4">
-              <img :src="item.gambar_url || 'https://via.placeholder.com/150'" 
+              <img :src="`http://localhost:8000/storage/${item.gambar_url}` || 'https://via.placeholder.com/150'" 
                    class="img-fluid rounded-start menu-item-img-mobile" 
                    alt="Gambar menu">
             </div>
@@ -195,14 +187,14 @@ async function handleDelete(id: number, nama: string) {
                   {{ item.is_tersedia ? 'Tersedia' : 'Habis' }}
                 </span>
                 <p v-if="user?.role === 'Admin'" class="card-text mt-2 mb-0">
-                  <small class="text-muted">Tenant: {{ item.tenant?.nama || 'N/A' }}</small>
+                  <small class="text-muted">Tenant: {{ item.tenant || 'N/A' }}</small>
                 </p>
               </div>
             </div>
           </div>
 
           <div class="card-footer bg-white p-2 d-flex gap-2">
-            <NuxtLink :to="`/menu-items/${item.id}/edit`" class="btn btn-sm btn-outline-secondary w-100">
+            <NuxtLink :to="`/admin/menu-items/${item.id}/edit`" class="btn btn-sm btn-outline-secondary w-100">
               <i class="bi bi-pencil-fill"></i> Edit
             </NuxtLink>
             <button class="btn btn-sm btn-outline-danger w-100" @click="handleDelete(item.id, item.nama)">

@@ -6,10 +6,18 @@ export default defineNuxtConfig({
     preset: 'node-server',
   },
   modules: ['@pinia/nuxt', '@vueuse/nuxt', 'pinia-plugin-persistedstate/nuxt'],
-  css: ['bootstrap/dist/css/bootstrap.min.css', 'bootstrap-icons/font/bootstrap-icons.css'],
+  css: [
+        'bootstrap/dist/css/bootstrap.min.css', 
+        'bootstrap-icons/font/bootstrap-icons.css',
+        "vue-toastification/dist/index.css"
+      ],
   plugins: ['app/plugins/bootstrap.client.ts', 'app/plugins/echo.client.ts'],
   routeRules: {
     '/api/**': { proxy: {to : 'http://127.0.0.1:8000/api/**'} },
+    '/broadcasting/auth': { proxy: {to : 'http://127.0.0.1:8000/broadcasting/auth'} },
+  },
+  build: {
+    transpile: ['vue-toastification'],
   },
 
   piniaPluginPersistedstate: {

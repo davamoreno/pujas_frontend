@@ -9,6 +9,7 @@ interface User {
   tenant: {
     id: number;
     nama: string;
+    status_operasional: string | null;
   } | null;
 }
 interface AuthState {
@@ -55,7 +56,23 @@ export const useAuthStore = defineStore('auth', {
         const router = useRouter();
         router.push('/admin/login');
     },
+    async refreshUser() {
+      if (!this.token) return;
+      const config = useRuntimeConfig();
+      try {
+        const updatedUser = await $fetch<User>(`${config.public.apiHost}/api/auth/refresh-user-data`, {
+          headers: {
+            'Authorization': `Bearer ${this.token}`,
+            'Accept': 'application/json',
+          },
+        });
+        this.user = updatedUser;
+      } catch (error) {
+        console.error('Gagal memperbarui data user:', error);
+      }
+    },
   },
+
 
   /** 
    * Baca dokumentasi untuk pinia-plugin-persistedstate:

@@ -12,4 +12,5 @@ export default defineNuxtRouteMiddleware((to, from) => {
   }
 
   // Jika ada token, biarkan.
+  
 });

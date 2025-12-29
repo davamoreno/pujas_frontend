@@ -1,5 +1,11 @@
 <script setup lang="ts">
 import { useAuthStore } from '~/stores/auth';
+import type { Staff } from '~/types/api/staff';
+import type { PaginatedResponse } from '~/types/api/pagination';
+import type { Tenant } from '~/types/api/tenant';
+
+
+const selectedStaffName = ref('');
 
 // 1. Terapkan Layout dan Middleware
 definePageMeta({
@@ -13,42 +19,45 @@ const router = useRouter();
 const route = useRoute(); // <-- [BARU] Untuk mendapatkan ID dari URL
 const tenantId = route.params.id as string;
 
+
 // === 2. State untuk form (Sama, tapi akan kita isi) ===
-const form = reactive({
+const form = ref({
   nama: '',
   staff_id: null as number | null,
   status: 'Aman/Halal',
   is_active: true,
   gambar_url: null as File | null,
-  current_gambar_url: null as string | null // <-- [BARU] Untuk menampilkan gambar lama
+  current_gambar_url: null as string | null
+});
+
+onMounted(() => {
+  // console.log('Editing tenant ID:', tenantId);
 });
 
 // === 3. Fetch data staff untuk dropdown (Sama seperti create.vue) ===
-const { data: staffList, pending: staffPending, error: staffFetchError } = useFetch<any[]>(() => `${config.public.apiHost}/api/staff`, {
-  lazy: true,
+const { data: staffList, pending: staffPending, error: staffFetchError } = useFetch<PaginatedResponse<Staff>>(() => `${config.public.apiHost}/api/staff`, {
   headers: { 'Authorization': `Bearer ${authStore.token}` }
 });
 const pemilikTokoList = computed(() => {
-  return staffList.value?.filter(staff => staff.role.nama === 'Pemilik Tenant') || [];
+  return staffList.value?.data?.filter(staff => staff?.role?.nama === 'Pemilik Tenant') || [];
 });
 
 // === 4. [BARU] Fetch data tenant yang ingin di-edit ===
-const { data: tenantData, pending: tenantPending, error: tenantFetchError } = await useFetch<any>(() => `${config.public.apiHost}/api/tenant/${tenantId}`, {
-  lazy: true,
+const { data: tenantData, pending: tenantPending, error: tenantFetchError } = await useFetch<Tenant>(() => `${config.public.apiHost}/api/tenants/${tenantId}`, {
   headers: { 'Authorization': `Bearer ${authStore.token}` },
   // 'watch' akan otomatis mengisi form saat data datang
-  watch: [
-    (newData : any) => {
-      if (newData) {
-        form.nama = newData.nama;
-        form.staff_id = newData.staff_id;
-        form.status = newData.status || 'Aman/Halal';
-        form.is_active = newData.is_active;
-        form.current_gambar_url = newData.gambar_url;
-      }
-    }
-  ]
 });
+
+watch(tenantData, (newTenant) => {
+  if (newTenant) {
+    form.value.nama = newTenant.nama;
+    form.value.staff_id = newTenant.staff?.id || null;
+    selectedStaffName.value = newTenant.staff ? `${newTenant.staff.nama} (${newTenant.staff.username})` : '';
+    form.value.status = newTenant.status;
+    form.value.is_active = Boolean(newTenant.is_active) ? true : false;
+    form.value.current_gambar_url = newTenant.gambar_url;
+  }
+}, { immediate: true });
 
 // === 5. State untuk submit (Sama) ===
 const submitPending = ref(false);
@@ -58,7 +67,7 @@ const submitError = ref<string | null>(null);
 function handleFileUpload(event: Event) {
   const target = event.target as HTMLInputElement;
   if (target.files && target.files[0]) {
-    form.gambar_url = target.files[0];
+    form.value.gambar_url = target.files[0];
   }
 }
 
@@ -67,14 +76,14 @@ async function handleSubmit() {
   submitError.value = null;
 
   const formData = new FormData();
-  formData.append('nama', form.nama);
-  if (form.staff_id) {
-    formData.append('staff_id', String(form.staff_id));
+  formData.append('nama', form.value.nama);
+  if (form.value.staff_id) {
+    formData.append('staff_id', String(form.value.staff_id));
   }
-  formData.append('status', form.status);
-  formData.append('is_active', form.is_active ? '1' : '0');
-  if (form.gambar_url) {
-    formData.append('gambar_url', form.gambar_url); // Kirim file baru jika ada
+  formData.append('status', form.value.status);
+  formData.append('is_active', form.value.is_active ? '1' : '0');
+  if (form.value.gambar_url) {
+    formData.append('gambar_url', form.value.gambar_url); // Kirim file baru jika ada
   }
   
   // [PENTING] Tambahkan _method: 'PUT' untuk method spoofing
@@ -103,6 +112,11 @@ async function handleSubmit() {
   } finally {
     submitPending.value = false;
   }
+}
+
+function onStaffSelected(staff: Staff) {
+  form.value.staff_id = staff.id;
+  selectedStaffName.value = `${staff.nama} (${staff.username})`;
 }
 </script>
 
@@ -137,12 +151,17 @@ async function handleSubmit() {
 
           <div class="mb-3">
             <label for="staff" class="form-label">Pemilik Tenant (Staff)</label>
-            <select v-model="form.staff_id" class="form-select" id="staff" required>
-              <option :value="null" disabled>-- Pilih seorang staff --</option>
-              <option v-for="staff in pemilikTokoList" :key="staff.id" :value="staff.id">
-                {{ staff.nama }} (Username: {{ staff.username }})
-              </option>
-            </select>
+            <div class="input-group">
+              <input type="text" class="form-control" :value="selectedStaffName" readonly>
+              <button 
+                class="btn btn-outline-secondary" 
+                type="button" 
+                data-bs-toggle="modal" 
+                data-bs-target="#staffPilihModal"
+              >
+                Pilih
+              </button>
+            </div>
           </div>
           
           <div class="mb-3">
@@ -153,7 +172,7 @@ async function handleSubmit() {
           </div>
 
           <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Status</label> 
             <select v-model="form.status" class="form-select" id="status">
               <option value="Aman/Halal">Aman/Halal</option>
               <option value="Beberapa menu tidak halal">Beberapa menu tidak halal</option>
@@ -175,6 +194,7 @@ async function handleSubmit() {
         </form>
       </div>
     </div>
+    <TenantStaffSelectModal @staff-selected="onStaffSelected" />
   </div>
 </template>
 

@@ -1,123 +1,100 @@
-<template>
-
-  <div class="d-flex justify-content-center align-items-center"
-    style="background-color: #D9D9D9; height: 175px; margin-bottom: 32px;">
-    <h1>PUJASERA PNB</h1>
-  </div>
-  <div style="margin-left: 24px; margin-right: 24px; margin-top: 32px; margin-bottom: 32px;">
-
-    <!-- Nama pemesan dan Ikon keranjang -->
-    <div class="row" style="margin-bottom: 24px;">
-      <div class="col-6 d-flex ">
-        <span class="justify-content-start">
-          <p class="fs-4 fw-medium text-start">Nama Pemesan</p>
-          <input type="text" placeholder="Isi Disini" style="border: none;" class="fw-medium">
-        </span>
-      </div>
-      <div class="col-6 d-flex justify-content-end align-items-center">
-        <button style="width: 60px; height: 60px; border-color: #D9D9D9;"
-          class="d-flex justify-content-center align-items-center btn rounded-pill btn-zoom disabled">
-          <img src="\img\keranjang.svg" alt="">
-        </button>
-      </div>
-    </div>
-
-    <!-- Menu -->
-    <div>
-      <h3 class="text-start" style="margin-bottom: 20px;">Pilihan Tenant Pujasera</h3>
-      <div class="row g-5">
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Surya</h5>
-            </div>
-          </btn>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Yonathan</h5>
-            </div>
-          </btn>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Abhi</h5>
-            </div>
-          </btn>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Dava</h5>
-            </div>
-          </btn>
-        </div>
-
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Ozza</h5>
-            </div>
-          </btn>
-        </div>
-
-        <div class="col-lg-4 col-md-6">
-          <btn class="card btn-zoom-menu" style="border-color: #D9D9D9;">
-            <img src="\img\tenant.jpg" class="card-img-top p-3" alt="...">
-            <div class="card-body">
-              <h5 class="card-title text-center">Warung Bu Jesi</h5>
-            </div>
-          </btn>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</template>
-
 <script setup lang="ts">
-// You can add script logic here if needed
+import { useCustomerStore } from '~/stores/customer';
 
+definePageMeta({
+  layout: 'customer', // Pastikan layout ini ada, atau pakai 'default'
+});
+
+const customerStore = useCustomerStore();
+const router = useRouter();
+const namaInput = ref('');
+const isLoading = ref(false);
+
+// Jika user ternyata sudah punya sesi aktif, langsung lempar ke halaman Tenants
+// (Misal dia tutup browser terus buka lagi)
+onMounted(() => {
+  if (customerStore.isGuestRegistered) {
+    navigateTo('/tenants');
+  }
+});
+
+async function mulaiPesan() {
+  if (!namaInput.value.trim()) {
+    alert("Masukkan namamu dulu ya!");
+    return;
+  }
+
+  isLoading.value = true;
+  
+  // Panggil action di Store
+  const success = await customerStore.registerGuest(namaInput.value);
+  
+  if (success) {
+    // Redirect ke halaman pilih Kantin
+    router.push('/tenants');
+  } else {
+    alert("Gagal memulai sesi. Coba lagi.");
+  }
+  
+  isLoading.value = false;
+}
 </script>
 
+<template>
+  <div class="min-vh-100 d-flex flex-column align-items-center justify-content-center bg-light px-3">
+    
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden" style="max-width: 400px; width: 100%;">
+      <div class="bg-primary p-5 text-center text-white position-relative">
+        <i class="bi bi-shop display-1"></i>
+        <div class="mt-3 fw-bold fs-4">Pujasera PNB</div>
+        <p class="small opacity-75">Pesan makan tanpa antri</p>
+        
+        <div class="position-absolute top-0 start-0 translate-middle bg-white opacity-10 rounded-circle" style="width: 150px; height: 150px;"></div>
+      </div>
+
+      <div class="card-body p-4">
+        <div class="mb-4 text-center">
+          <h5 class="fw-bold text-dark">Selamat Datang! 👋</h5>
+          <p class="text-muted small">Masukkan namamu untuk mulai memesan.</p>
+        </div>
+
+        <form @submit.prevent="mulaiPesan">
+          <div class="mb-3">
+            <label class="form-label fw-bold small text-uppercase text-muted">Nama Kamu</label>
+            <input 
+              v-model="namaInput"
+              type="text" 
+              class="form-control form-control-lg bg-light border-0" 
+              placeholder="Contoh: Budi Gemez" 
+              required
+              autofocus
+            >
+          </div>
+
+          <button 
+            type="submit" 
+            class="btn btn-primary w-100 py-3 rounded-pill fw-bold shadow-sm transition-btn"
+            :disabled="isLoading"
+          >
+            <span v-if="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+            {{ isLoading ? 'Memproses...' : 'Mulai Pesan Sekarang' }}
+          </button>
+        </form>
+      </div>
+      
+      <div class="card-footer bg-white text-center border-0 pb-4">
+        <small class="text-muted" style="font-size: 0.7rem;">&copy; 2024 Pujasera Digital</small>
+      </div>
+    </div>
+
+  </div>
+</template>
+
 <style scoped>
-/* Efek transisi halus untuk semua properti */
-.btn-zoom {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+.transition-btn {
+  transition: transform 0.2s;
 }
-
-/* Saat di-hover, perbesar tombol sedikit */
-.btn-zoom:hover {
-  transform: scale(1.1);
-  /* Zoom in sebesar 10% */
-  /* Opsional: tambahkan shadow saat hover agar lebih 'mengangkat' */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-}
-
-.btn-zoom-menu {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Saat di-hover, perbesar tombol sedikit */
-.btn-zoom-menu:hover {
-  transform: scale(1.02);
-  /* Zoom in sebesar 10% */
-  /* Opsional: tambahkan shadow saat hover agar lebih 'mengangkat' */
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+.transition-btn:active {
+  transform: scale(0.95);
 }
 </style>
