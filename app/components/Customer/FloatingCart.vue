@@ -6,7 +6,7 @@
 
 <template>
   <Transition name="slide-up">
-    <div v-if="cartStore.items.length > 0" class="fixed-bottom container-fluid p-3 floating-cart-container">
+    <div v-if="cartStore.items.length > 0" class="fixed-bottom container p-3 floating-cart-container">
       <div class="card border-0 shadow-lg bg-primary text-white rounded-4 overflow-hidden">
         <div class="card-body p-3 d-flex align-items-center justify-content-between" @click="navigateTo('/checkout')" style="cursor: pointer;">
           
@@ -29,7 +29,7 @@
 /* Posisi Floating Cart */
 .mb-safe {
   /* Di Desktop: Melayang biasa di bawah */
-  margin-bottom: 20px; 
+  margin-bottom: 40px; 
 }
 
 /* Di Mobile (Layar < 768px): Naikkan ke atas Bottom Nav */
@@ -54,6 +54,7 @@
 .floating-cart-container {
   z-index: 1040; /* Pastikan di atas BottomNav (biasanya z-index 1030) */
   pointer-events: none; /* Agar klik tembus ke elemen di bawahnya jika cart tidak diklik */
+  bottom: 70px; /* Jarak dari bawah layar */
 }
 
 /* Container kartu cart itu sendiri */

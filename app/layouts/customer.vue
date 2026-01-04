@@ -92,6 +92,7 @@ async function forceLogout() {
 async function handleLogout() {
   const confirm = window.confirm('Apakah Anda ingin mengganti nama atau keluar?');
   if (confirm) {
+    cartStore.clearCart();
     await customerStore.closeSession(); 
   }
 }
@@ -142,8 +143,6 @@ async function handleLogout() {
     <main class="flex-grow-1 main-content mt-5 pt-3">
       <slot />
     </main>
-
-    <CustomerFloatingCart />
 
     <CustomerBottomNav class="d-md-none" />
 

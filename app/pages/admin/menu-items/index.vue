@@ -170,7 +170,7 @@ async function handleDelete(id: number, nama: string) {
           
           <div class="row g-0">
             <div class="col-4">
-              <img :src="`http://localhost:8000/storage/${item.gambar_url}` || 'https://via.placeholder.com/150'" 
+              <img :src="item.gambar_url || 'https://via.placeholder.com/150'" 
                    class="img-fluid rounded-start menu-item-img-mobile" 
                    alt="Gambar menu">
             </div>
